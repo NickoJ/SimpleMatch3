@@ -1,0 +1,16 @@
+{
+    "name": "Match3Core",
+    "references": [
+        "Leopotam.Ecs",
+        "Leopotam.Ecs.UnityIntegration",
+        "Unity.Mathematics"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
