@@ -1,4 +1,5 @@
 ﻿using Klyukay.SimpleMatch3.Core;
+using Klyukay.SimpleMatch3.Game.Field;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ using static Klyukay.SimpleMatch3.Core.ColorUtils;
 
 // ReSharper disable ConvertToAutoProperty
 
-namespace Klyukay.SimpleMatch3.Game
+namespace Klyukay.SimpleMatch3.Game.Settings
 {
 
     [CreateAssetMenu(menuName = "Match3/Settings", fileName = "Match3Settings")]
@@ -20,6 +21,10 @@ namespace Klyukay.SimpleMatch3.Game
         [SerializeField, Range(MinColorsCount, MaxColorsCount)]
         private int colorsCount = MinColorsCount;
 
+        [SerializeField] private StoneController stonePrefab;
+        
+        [SerializeField] private StoneSprites stoneSprites;
+
         public int2 Size
         {
             get
@@ -31,6 +36,9 @@ namespace Klyukay.SimpleMatch3.Game
             }
         }
         public int ColorsCount => colorsCount;
+
+        public StoneController StonePrefab => stonePrefab;
+        public StoneSprites StoneSprites => stoneSprites;
         
     }
 

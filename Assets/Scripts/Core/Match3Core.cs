@@ -8,6 +8,7 @@ namespace Klyukay.SimpleMatch3.Core
     public class Match3Core : IDisposable
     {
 
+        private readonly ICoreEventsReceiver _eventsReceiver;
         private readonly IMatch3Settings _settings;
         
         private EcsWorld _world;
@@ -17,12 +18,12 @@ namespace Klyukay.SimpleMatch3.Core
 
         private bool _disposed;
         
-        public Match3Core(IMatch3Settings settings)
+        public Match3Core(ICoreEventsReceiver eventsReceiver, IMatch3Settings settings)
         {
+            _eventsReceiver = eventsReceiver;
             _settings = settings;
         }
 
-        //TODO: To async
         public void Initialize()
         {
             _world = new EcsWorld();
@@ -31,7 +32,7 @@ namespace Klyukay.SimpleMatch3.Core
             CreateWorldObserver(_world);
 
             _systems = new EcsSystems(_world)
-                .Add(new FieldInitializeSystem(_world, _state));
+                .Add(new FieldInitializeSystem(_world, _state, _eventsReceiver));
 //                .Add(new StoneSwapSystem(_world, _settings))
 //                .Add(new FallStoneSystem(_world, _settings))
 //                .Add(new ExplodeComboSystem(_world, _settings))
