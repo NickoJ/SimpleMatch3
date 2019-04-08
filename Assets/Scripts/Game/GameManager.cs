@@ -4,6 +4,7 @@ using Klyukay.SimpleMatch3.Game.Field;
 using Klyukay.SimpleMatch3.Game.Settings;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Klyukay.SimpleMatch3.Game
 {
@@ -13,6 +14,8 @@ namespace Klyukay.SimpleMatch3.Game
 
         [SerializeField] private GameSettings settings;
         [SerializeField] private FieldController field;
+
+        [SerializeField] private Button restartButton;
         
         private Match3Core _core;
 
@@ -25,6 +28,8 @@ namespace Klyukay.SimpleMatch3.Game
 
         private void Start()
         {
+            restartButton.onClick.AddListener(Restart);
+            
             InitializeGame();
         }
 
@@ -42,6 +47,9 @@ namespace Klyukay.SimpleMatch3.Game
 
         private void Reset()
         {
+            StopAllCoroutines();
+            IsBusy = false;
+            
             field.Reset();
             
             _core?.Dispose();
