@@ -18,6 +18,8 @@ namespace Klyukay.SimpleMatch3.Game.Settings
 
         [SerializeField] private int2 size = MinFieldSize;
 
+        [SerializeField, Range(0.1f, 2f)] private float timeBetweenTicks = 0.1f;
+
         [SerializeField, Range(MinColorsCount, MaxColorsCount)]
         private int colorsCount = MinColorsCount;
 
@@ -35,11 +37,14 @@ namespace Klyukay.SimpleMatch3.Game.Settings
                 return size;
             }
         }
+        
+        public float TimeBetweenTicks => timeBetweenTicks;
+        
         public int ColorsCount => colorsCount;
 
         public StoneController StonePrefab => stonePrefab;
-        public StoneSprites StoneSprites => stoneSprites;
         
+        public StoneSprites StoneSprites => stoneSprites;
     }
 
 }

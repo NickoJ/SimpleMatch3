@@ -1,6 +1,8 @@
-﻿using Klyukay.SimpleMatch3.Core;
+﻿using System.Collections;
+using Klyukay.SimpleMatch3.Core;
 using Klyukay.SimpleMatch3.Game.Field;
 using Klyukay.SimpleMatch3.Game.Settings;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Klyukay.SimpleMatch3.Game
@@ -13,23 +15,29 @@ namespace Klyukay.SimpleMatch3.Game
         [SerializeField] private FieldController field;
         
         private Match3Core _core;
-        private bool _destroyed;
-        
+
+        public bool IsBusy { get; private set; }
+
         private void Awake()
         {
-            field.Initialize(settings);
+            field.Initialize(this, settings);
         }
 
-        private void OnEnable()
+        private void Start()
+        {
+            InitializeGame();
+        }
+
+        public void Restart()
+        {
+            Reset();
+            InitializeGame();
+        }
+        
+        private void InitializeGame()
         {
             _core = new Match3Core(field, settings);
-            
             _core.Initialize();
-        }
-
-        private void OnDisable()
-        {
-            if (!_destroyed) Reset();
         }
 
         private void Reset()
@@ -39,6 +47,28 @@ namespace Klyukay.SimpleMatch3.Game
             _core?.Dispose();
             _core = null;
         }
+
+        public void SwapStones(int2 lhvPos, int2 rhvPos)
+        {
+            if (IsBusy || _core.IsBusy) return;
+
+            IsBusy = true;
+            _core.Swap(lhvPos, rhvPos);
+            StartCoroutine(Tick());
+        }
+
+        private IEnumerator Tick()
+        {
+            var waitTime = new WaitForSeconds(settings.TimeBetweenTicks);
+            do
+            {
+                _core.Tick();
+                yield return waitTime;
+            } while (_core.IsBusy);
+
+            IsBusy = false;
+        }
+        
     }
 
 }

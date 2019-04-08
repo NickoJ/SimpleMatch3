@@ -1,21 +1,54 @@
-using Leopotam.Ecs;
+using Klyukay.SimpleMatch3.Core.Components;
+using Klyukay.SimpleMatch3.Core.Events;
+using Klyukay.SimpleMatch3.Core.Utils;
+using Unity.Mathematics;
 
 namespace Klyukay.SimpleMatch3.Core.Systems
 {
-    internal class FallStoneSystem : IEcsRunSystem
+    internal class FallStoneSystem : BaseTickSystem
     {
-        private readonly EcsWorld _world;
-        private readonly IMatch3Settings _settings;
 
-        public FallStoneSystem(EcsWorld world, IMatch3Settings settings)
+        private readonly ICoreEventsReceiver _eventsReceiver;
+        
+        public FallStoneSystem(ICoreEventsReceiver eventsReceiver, Match3State state) : base(state)
         {
-            _world = world;
-            _settings = settings;
+            _eventsReceiver = eventsReceiver;
         }
 
-        public void Run()
+        protected override void ExecuteTick()
         {
-            throw new System.NotImplementedException();
+            var field = State.StoneField;
+            var (w, h) = field;
+
+            for (int x = 0; x < w; ++x)
+            {
+                for (int y = 0; y < h; ++y)
+                {
+                    if (field[x, y] != null) continue;
+
+                    var pos = new int2(x, y);
+                    var above = FindStoneAbove(field, pos);
+                    if (above == null) break;
+
+                    field.Swap(pos, above.position);
+
+                    State.TickProcessed = true;
+                    _eventsReceiver.StoneMoved(new StoneMoveEvent(above));
+                }
+            }
+        }
+
+        private static Stone FindStoneAbove(Stone[,] field, int2 pos)
+        {
+            var (_, h) = field;
+
+            for (int y = pos.y + 1; y < h; ++y)
+            {
+                if (field[pos.x, y] == null) continue;
+                return field[pos.x, y];
+            }
+
+            return null;
         }
         
     }

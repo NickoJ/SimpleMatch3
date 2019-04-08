@@ -9,11 +9,13 @@ namespace Klyukay.SimpleMatch3.Core
         internal readonly Randomizer Randomizer; 
         internal readonly Stone[,] StoneField;
 
-        public Match3State(IMatch3Settings settings)
+        internal Match3State(IMatch3Settings settings)
         {
             Randomizer = new Randomizer(settings.ColorsCount);
             StoneField = new Stone[settings.Size.x, settings.Size.y];
         }
+
+        internal bool TickProcessed { get; set; }
         
     }
     

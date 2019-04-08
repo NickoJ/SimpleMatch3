@@ -1,6 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 using Klyukay.SimpleMatch3.Core.Components;
+using Leopotam.Ecs;
 using Unity.Mathematics;
+using UnityEditorInternal;
 
 namespace Klyukay.SimpleMatch3.Core.Utils
 {
@@ -9,7 +14,27 @@ namespace Klyukay.SimpleMatch3.Core.Utils
     internal static class FieldUtils
     {
 
-        internal static bool HasActiveCombo(Stone[,] field)
+        internal static bool Swap(this Stone[,] field, int2 lPos, int2 rPos)
+        {
+            if (field == null) return false;
+            if (!field.InRange(lPos) || !field.InRange(rPos)) return false;
+
+            var ls = field.Get(lPos);
+            var rs = field.Get(rPos);
+
+            if (ls != null) ls.position = rPos;
+            if (rs != null) rs.position = lPos;
+
+            field.Set(rPos, ls);
+            field.Set(lPos, rs);
+
+            return true;
+        }
+
+        internal static bool HasActiveCombo(Stone[,] field) =>
+            SearchStonesInCombo(field).GetEnumerator().MoveNext();   
+
+        internal static IEnumerable<Stone> SearchStonesInCombo(Stone[,] field)
         {
             var (w, h) = field;
             
@@ -17,26 +42,43 @@ namespace Klyukay.SimpleMatch3.Core.Utils
             {
                 for (int y = 0; y < h; ++y)
                 {
+                    if (field[x, y] == null) continue;
+                    
                     var c = field[x, y].color;
-                    var hasCombo = false;
                     
                     if (x < field.GetLength(0) - 2)
                     {
-                        hasCombo = c == field[x + 1, y].color && c == field[x + 2, y].color;
+                        var s1 = field[x + 1, y];
+                        var s2 = field[x + 2, y];
+                        var hasCombo = s1 != null && s2 != null;
+                        hasCombo = hasCombo && c == s1.color && c == s2.color;
+                        if (hasCombo)
+                        {
+                            foreach (var s in GetAllWithColor(field, c, new int2(x, y), new int2(1, 0)))
+                            {
+                                yield return s;
+                            }
+                        }
                     }
 
                     if (y < field.GetLength(1) - 2)
                     {
-                        hasCombo = hasCombo || c == field[x, y + 1].color && c == field[x, y + 2].color;
+                        var s1 = field[x, y + 1];
+                        var s2 = field[x, y + 2];
+                        var hasCombo = s1 != null && s2 != null;
+                        hasCombo = hasCombo && c == s1.color && c == s2.color;
+                        if (hasCombo)
+                        {
+                            foreach (var s in GetAllWithColor(field, c, new int2(x, y), new int2(0, 1)))
+                            {
+                                yield return s;
+                            }
+                        }
                     }
-
-                    if (hasCombo) return true;
                 }
             }
-
-            return false;
         }
-
+        
         internal static bool HasAvailableCombo(Stone[,] field)
         {
             var (w, h) = field;
@@ -52,6 +94,20 @@ namespace Klyukay.SimpleMatch3.Core.Utils
             return false;
         }
 
+        private static IEnumerable<Stone> GetAllWithColor(Stone[,] field, Color color, 
+            int2 startPos, int2 offset)
+        {
+            for (var pos = startPos; field.InRange(pos); pos += offset)
+            {
+                var stone = field.Get(pos);
+                
+                if (stone == null) yield break;
+                if (stone.color != color) yield break;
+
+                yield return stone;
+            }
+        }
+        
         private static bool HasAvailableCombo(int2 pos, Stone[,] field)
         {
             foreach (var combo in AllCombos)

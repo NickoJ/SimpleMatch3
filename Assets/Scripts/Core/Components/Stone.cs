@@ -1,14 +1,20 @@
 using Unity.Mathematics;
+// ReSharper disable InconsistentNaming
 
 namespace Klyukay.SimpleMatch3.Core.Components
 {
     
-    internal class Stone
+    public class Stone
     {
         internal int eid;
         internal int2 position;
         internal Color color;
-        internal bool valid;
+
+        public int Eid => eid;
+
+        public int2 Position => position;
+        
+        public Color Color => color;
     }
     
 }

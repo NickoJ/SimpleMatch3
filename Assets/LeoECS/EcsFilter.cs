@@ -500,7 +500,6 @@ namespace Leopotam.Ecs {
         /// <summary>
         /// Amount of filtered entities.
         /// </summary>
-        [Obsolete ("Use foreach(var idx in filter) { } loop instead, or IsEmpty() for check that filter is empty or not")]
         public int EntitiesCount { get { return _entitiesCount; } }
 
         internal protected int _entitiesCount;

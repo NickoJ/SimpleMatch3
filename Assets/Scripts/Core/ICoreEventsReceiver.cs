@@ -1,5 +1,4 @@
 using Klyukay.SimpleMatch3.Core.Events;
-using Unity.Mathematics;
 
 namespace Klyukay.SimpleMatch3.Core
 {
@@ -8,9 +7,9 @@ namespace Klyukay.SimpleMatch3.Core
     {
 
         void StoneCreated(in StoneCreateEvent e);
-        void StoneDestroyed(int id);
-        void StoneMoved(int id, int2 pos);
-
+        void StoneDestroyed(in StoneDestroyEvent e);
+        void StoneMoved(in StoneMoveEvent e);
+        void StoneChangeColor(in StoneChangeColorEvent e);
     }
     
 }

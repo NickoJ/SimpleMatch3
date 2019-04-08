@@ -1,6 +1,9 @@
 ﻿using System;
+using Klyukay.SimpleMatch3.Core.Components;
 using Klyukay.SimpleMatch3.Core.Systems;
+using Klyukay.SimpleMatch3.Core.Utils;
 using Leopotam.Ecs;
+using Unity.Mathematics;
 
 namespace Klyukay.SimpleMatch3.Core
 {
@@ -24,6 +27,8 @@ namespace Klyukay.SimpleMatch3.Core
             _settings = settings;
         }
 
+        public bool IsBusy { get; private set; }
+
         public void Initialize()
         {
             _world = new EcsWorld();
@@ -32,27 +37,40 @@ namespace Klyukay.SimpleMatch3.Core
             CreateWorldObserver(_world);
 
             _systems = new EcsSystems(_world)
-                .Add(new FieldInitializeSystem(_world, _state, _eventsReceiver));
-//                .Add(new StoneSwapSystem(_world, _settings))
-//                .Add(new FallStoneSystem(_world, _settings))
-//                .Add(new ExplodeComboSystem(_world, _settings))
-//                .Add(new CreateNewStonesSystem(_world, _settings));
+                .Add(new StoneSwapSystem(_world, _eventsReceiver, _state))
+                .Add(new FallStoneSystem(_eventsReceiver, _state))
+                .Add(new CreateNewStonesSystem(_world, _eventsReceiver, _state))
+                .Add(new MarkDestroyingComboSystem(_world, _state))
+                .Add(new DestroyStoneSystem(_world, _eventsReceiver, _state))
+                .Add(new FieldInitializeSystem(_world, _eventsReceiver, _state));
             
             _systems.Initialize();
 
-            var sb = new System.Text.StringBuilder();
-            for (int x = 0; x < _state.StoneField.GetLength(0); x++)
-            {
-                for (int y = 0; y < _state.StoneField.GetLength(1); y++)
-                {
-                    sb.Append((int)_state.StoneField[x, y].color).Append(' ');
-                }
-
-                sb.Append('\n');
-            }
-            UnityEngine.Debug.Log(sb.ToString());
-            
             CreateSystemsObserver(_systems);
+        }
+        
+        public void Swap(int2 lhvPos, int2 rhvPos)
+        {
+            var field = _state.StoneField;
+            if (!field.InRange(lhvPos) || !field.InRange(rhvPos)) return;
+            
+            var lhv = _state.StoneField.Get(lhvPos);
+            var rhv = _state.StoneField.Get(rhvPos);
+            if (lhv == null || rhv == null || lhv == rhv) return;
+
+            _world.AddComponent<Swapping>(lhv.eid);
+            _world.AddComponent<Swapping>(rhv.eid);
+            _world.ProcessDelayedUpdates();
+        }
+
+        public void Tick()
+        {
+            _state.TickProcessed = false;
+            
+            _systems.Run();
+            _world.RemoveOneFrameComponents();
+
+            IsBusy = _state.TickProcessed;
         }
         
         public void Dispose()

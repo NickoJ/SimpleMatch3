@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Match3Settings
   m_EditorClassIdentifier: 
   size:
-    x: 4
-    y: 4
-  colorsCount: 2
+    x: 6
+    y: 6
+  timeBetweenTicks: 0.15
+  colorsCount: 5
   stonePrefab: {fileID: 8477844459810701004, guid: 30a14a1ba498641408c9f989cf03e092,
     type: 3}
   stoneSprites: {fileID: 11400000, guid: 1fb2534fa954e42e6a27412550f5e369, type: 2}

@@ -1,18 +1,14 @@
 using Klyukay.SimpleMatch3.Core.Components;
-using Unity.Mathematics;
 // ReSharper disable InconsistentNaming
 
 namespace Klyukay.SimpleMatch3.Core.Events
 {
-    
-    public readonly struct StoneCreateEvent
+    public readonly struct StoneChangeColorEvent
     {
-        
         public readonly int id;
-        public readonly int2 pos;
         public readonly Color color;
 
-        internal StoneCreateEvent(Stone stone)
+        internal StoneChangeColorEvent(Stone stone)
         {
             if (stone == null)
             {
@@ -21,10 +17,7 @@ namespace Klyukay.SimpleMatch3.Core.Events
             }
 
             id = stone.eid;
-            pos = stone.position;
-            color = stone.color;
+            color = stone.Color;
         }
-        
     }
-    
 }
