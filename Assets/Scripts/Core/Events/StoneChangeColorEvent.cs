@@ -17,7 +17,7 @@ namespace Klyukay.SimpleMatch3.Core.Events
             }
 
             id = stone.eid;
-            color = stone.Color;
+            color = stone.color;
         }
     }
 }
