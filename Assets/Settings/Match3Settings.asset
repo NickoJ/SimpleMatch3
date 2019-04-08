@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a3a8c3668565417ba44b428f191d25a, type: 3}
+  m_Name: Match3Settings
+  m_EditorClassIdentifier: 
+  size:
+    x: 6
+    y: 6
+  timeBetweenTicks: 0.15
+  colorsCount: 5
+  stonePrefab: {fileID: 8477844459810701004, guid: 30a14a1ba498641408c9f989cf03e092,
+    type: 3}
+  stoneSprites: {fileID: 11400000, guid: 1fb2534fa954e42e6a27412550f5e369, type: 2}
