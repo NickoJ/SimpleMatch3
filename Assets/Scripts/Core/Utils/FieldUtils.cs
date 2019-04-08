@@ -1,11 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using Klyukay.SimpleMatch3.Core.Components;
-using Leopotam.Ecs;
 using Unity.Mathematics;
-using UnityEditorInternal;
 
 namespace Klyukay.SimpleMatch3.Core.Utils
 {
